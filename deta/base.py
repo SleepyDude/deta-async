@@ -52,16 +52,16 @@ class Base:
     
     async def delete(self, *keys: str) -> Optional[List[Dict[str, str]]]:
         if not keys:
-            return None
+            raise ValueError('No keys')
         if len(keys) == 1:
-            r = await self.session.delete(
+            await self.session.delete(
                 f'{self.root}/items/{str(keys[0])}',
                 headers=self._auth_headers
             )
-            return [await r.json()]
-        tasks = [self.session.delete(f'{self.root}/items/{str(k)}') for k in keys]
-        responses = await asyncio.gather(*tasks)
-        return [await r.json() for r in responses]
+        else:
+            tasks = [self.session.delete(f'{self.root}/items/{str(k)}') for k in keys]
+            await asyncio.gather(*tasks)
+        return None # all's fine,
     
     async def get(self, *keys: str) -> List[Dict[str, Any]]:
         if not keys:
