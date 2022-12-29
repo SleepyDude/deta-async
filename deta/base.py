@@ -93,11 +93,24 @@ class Base:
                     return container
 
         if len(keys) == 1:
-            return [await (await self.session.get(f'{self.root}/items/{str(keys[0])}',headers=self._auth_headers)).json()]
+            resp = await self.session.get(
+                        f'{self.root}/items/{str(keys[0])}',
+                        headers=self._auth_headers
+                    )
+            print('resp:\n', resp)
+            status = resp.status
+            print('status_code:', status)
+            if status not in [200, 201, 202, 207]:
+                return None # the item is not found
+            else:
+                return [await resp.json()]
 
         tasks = [self.session.get(f'{self.root}/items/{str(k)}', headers=self._auth_headers) for k in keys]
         responses = await asyncio.gather(*tasks)
-        return [await r.json() for r in responses]
+        result = [await r.json() for r in responses if r.status in [200, 201, 202, 207]]
+        if len(result) == 0:
+            return None # no items found, empty array --> None
+        return result
     
     async def update(self, key: str, updater: Updater) -> Dict[str, Any]:
         resp = await self.session.patch(

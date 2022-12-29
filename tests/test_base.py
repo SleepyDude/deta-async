@@ -260,4 +260,4 @@ async def test_delete(base: Base, test_items):
         if item['key'] != 'existing2':
             assert item in items_in_db
 
-    await clear_base(base, len(test_items))
+    await clear_base(base, len(test_items) - 1)
