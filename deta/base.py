@@ -97,9 +97,7 @@ class Base:
                         f'{self.root}/items/{str(keys[0])}',
                         headers=self._auth_headers
                     )
-            print('resp:\n', resp)
             status = resp.status
-            print('status_code:', status)
             if status not in [200, 201, 202, 207]:
                 return None # the item is not found
             else:
