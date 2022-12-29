@@ -24,7 +24,7 @@ class Record:
         self.expire_after = expire_after
     
     def __repr__(self) -> str:
-        return f"Record({self.key}, {self.name}, {self.value})"
+        return f"Record({self.key}, {self.data})"
     
     def to_json(self) -> Dict[str, Any]:
         if self.key:
